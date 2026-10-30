@@ -184,12 +184,43 @@ textarea::placeholder,.drawer input::placeholder{color:var(--faint)}
 .toast{font-size:13px;color:var(--dim)}
 footer .shell{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-block:22px}
 
+/* ---------- changelog ---------- */
+.ver-tag{background:none;border:0;padding:0;font-family:var(--serif);font-style:italic;font-size:13px;color:var(--dim);cursor:pointer;letter-spacing:.02em}
+.ver-tag:hover{color:var(--fg)}
+.ver-tag b{font-family:var(--label);font-style:normal;font-weight:500;font-size:10px;letter-spacing:.2em;border:1px solid var(--line-2);padding:2px 6px;margin-right:6px;border-radius:2px;vertical-align:1px}
+.cl-box{width:min(760px,100%)}
+.cl-hero{padding:34px 30px 26px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;background:radial-gradient(ellipse at 85% 0%,rgb(255 255 255/.06),transparent 60%)}
+.cl-ver{font-family:var(--serif);font-size:clamp(56px,9vw,96px);line-height:.85;letter-spacing:-.02em;margin:0}
+.cl-ver em{color:var(--dim)}
+.cl-meta{display:flex;flex-direction:column;gap:6px;align-items:flex-end;text-align:right}
+.cl-code{font-family:var(--zh-serif);font-size:15px;letter-spacing:.2em}
+.cl-body{padding:8px 30px 26px}
+.cl-group{display:grid;grid-template-columns:110px minmax(0,1fr);gap:18px;padding:20px 0;border-bottom:1px solid var(--line)}
+.cl-group:last-child{border-bottom:0}
+@media (max-width:600px){.cl-group{grid-template-columns:minmax(0,1fr);gap:10px}.cl-hero,.cl-body{padding-inline:20px}.cl-meta{align-items:flex-start;text-align:left}}
+.cl-kind{font-family:var(--label);font-weight:500;font-size:12px;letter-spacing:.22em;display:flex;align-items:center;gap:8px;height:fit-content}
+.cl-kind i{width:7px;height:7px;border-radius:50%;background:var(--fg)}
+.cl-kind.imp i{background:transparent;border:1px solid var(--fg)}
+.cl-kind.fix i{background:transparent;border:1px dashed var(--dim)}
+.cl-items{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:14px}
+.cl-items li{display:flex;flex-direction:column;gap:3px}
+.cl-items b{font-family:var(--zh-serif);font-weight:500;font-size:16px;letter-spacing:.06em}
+.cl-items span{color:var(--dim);font-size:14px;line-height:1.7}
+.cl-items code{font-family:var(--label);letter-spacing:.12em;font-size:12px;color:var(--fg);border:1px solid var(--line-2);padding:0 5px}
+.cl-enter .cl-group{animation:gUp .6s cubic-bezier(.2,.7,.2,1) both}
+.cl-enter .cl-group:nth-child(2){animation-delay:.08s}.cl-enter .cl-group:nth-child(3){animation-delay:.16s}
+@media (max-width:480px){#today{display:none}}
+
 /* ---------- first-run guide ---------- */
 .guide-open{background:none;border:1px solid var(--line-2);color:var(--dim);font-family:var(--label);font-size:11px;letter-spacing:.18em;padding:5px 10px;border-radius:999px;cursor:pointer}
 .guide-open:hover{color:var(--fg);border-color:var(--fg)}
 .nav-right{display:flex;align-items:center;gap:14px}
 .guide{position:fixed;inset:0;z-index:70;display:grid;place-items:center;padding:max(16px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));background:rgb(4 5 7/.78);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);animation:cdIn .5s ease both}
 .g-box{width:min(860px,100%);max-height:100%;overflow:auto;background:var(--panel);border:1px solid var(--line-2);display:flex;flex-direction:column}
+.g-box{overflow:hidden!important}
+.g-top,.g-foot,.cl-hero{flex:none}
+.g-stage,.cl-body{flex:1 1 auto;min-height:0!important;overflow-y:auto;overscroll-behavior:contain}
+@media (max-width:700px){.g-art{min-height:0!important;padding:16px}.g-art svg{width:min(170px,55%)}.g-text{padding:22px 20px}.g-num{font-size:48px}.g-foot{padding:12px 16px}.g-foot .btn.solid{min-width:0}}
 .g-top,.g-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 22px}
 .g-top{border-bottom:1px solid var(--line)}
 .g-foot{border-top:1px solid var(--line);flex-wrap:wrap}
@@ -317,7 +348,7 @@ body.rain nav{background:rgb(8 10 13/.55)}
   <div class="shell">
     <a class="logo" href="#timer">Study.</a>
     <div class="links"><a href="#timer">TIMER</a><a href="#record">RECORD</a><a href="#music">MUSIC</a><a href="#review">REVIEW</a></div>
-    <div class="nav-right"><button class="guide-open" id="guide-open">GUIDE</button><span class="lbl" id="today"></span></div>
+    <div class="nav-right"><button class="ver-tag" id="cl-open" aria-label="更新紀錄"><b>DEMO</b>v0.1</button><button class="guide-open" id="guide-open">GUIDE</button><span class="lbl" id="today"></span></div>
   </div>
 </nav>
 
@@ -467,6 +498,33 @@ body.rain nav{background:rgb(8 10 13/.55)}
 
 <footer class="gutter"><div class="shell"><span class="logo">Study.</span><span class="lbl">Focus · Rest · Recall</span></div></footer>
 
+<div class="guide" id="changelog" hidden role="dialog" aria-modal="true" aria-labelledby="cl-title">
+  <div class="g-box cl-box">
+    <div class="g-top"><span class="lbl">Changelog · 更新紀錄</span><button class="g-skip" id="cl-close">CLOSE ✕</button></div>
+    <div class="cl-hero">
+      <h2 class="cl-ver" id="cl-title">Demo <em>0.1</em></h2>
+      <div class="cl-meta"><span class="cl-code">代號　雨夜</span><span class="lbl">Rainfall · 2026.10.31</span></div>
+    </div>
+    <div class="cl-body" id="cl-body">
+      <div class="cl-group"><div class="cl-kind"><i></i>NEW</div><ul class="cl-items">
+        <li><b>雨天模式</b><span>右下角一鍵切換，3・2・1 倒數動畫後進入雨夜窗景：模糊的城市光斑、玻璃上的水珠、慢慢滑落的雨滴。按 <code>ESC</code> 離開。</span></li>
+        <li><b>雨聲白噪音</b><span>即時合成的雨聲，不用下載音檔。可以開關、調音量，下次打開會記住你的設定。</span></li>
+        <li><b>五種旋轉雕塑</b><span>錶盤右下角的小圓鈕可切換 <code>KNOT</code> <code>TWIST</code> <code>GYRO</code> <code>MERCURY</code> <code>JACK</code>，形狀會融化變成下一個。</span></li>
+        <li><b>黑膠唱片音樂背景</b><span>音樂區換上銀色黑膠和穿過唱片的彩虹光。</span></li>
+        <li><b>新手教學</b><span>第一次打開會播放 6 頁動畫，介紹番茄鐘五大步驟與五大心法。右上角 <code>GUIDE</code> 可以隨時重看。</span></li>
+        <li><b>休息教練</b><span>計時器下方的提示卡會跟著狀態變化：準備專注、小休息、大休息，各自提醒該做什麼。</span></li>
+      </ul></div>
+      <div class="cl-group"><div class="cl-kind imp"><i></i>IMPROVED</div><ul class="cl-items">
+        <li><b>時間設定即時套用</b><span>F／S／L 邊打邊生效，並顯示「短休息改成 10 分鐘」之類的提示；正在倒數時會在下一輪生效。</span></li>
+        <li><b>雕塑背景透明</b><span>雨天模式下，雨景會從雕塑後面透出來。</span></li>
+        <li><b>手機版雨天按鈕</b><span>小螢幕上縮成圓形圖示，不再擋住內容。</span></li>
+      </ul></div>
+      <div class="cl-group"><div class="cl-kind fix"><i></i>FIXED</div><ul class="cl-items">
+        <li><b>S／L 點不到</b><span>雨聲面板疊在時間設定上的問題，現在雨天按鈕和雨聲開關排成一列，設定區也讓出了位置。</span></li>
+      </ul></div>
+    </div>
+  </div>
+</div>
 <div class="guide" id="guide" hidden role="dialog" aria-modal="true" aria-labelledby="g-title">
   <div class="g-box">
     <div class="g-top"><span class="lbl">The Pomodoro Method</span><button class="g-skip" id="g-skip">SKIP ✕</button></div>
@@ -901,8 +959,20 @@ void main(){
     if(e.key==='ArrowLeft' && i) show(i-1);
     e.stopPropagation();
   }, true);
-  let seen=false; try{ seen=!!localStorage.getItem('study-guide-seen'); }catch(e){ seen=true; }
+  /* changelog */
+  const VERSION='0.1', cl=$('changelog');
+  function openCL(){ cl.hidden=false; const b=$('cl-body'); b.classList.remove('cl-enter'); void b.offsetWidth; b.classList.add('cl-enter'); setTimeout(()=>$('cl-close').focus(),50); }
+  function closeCL(){ cl.hidden=true; try{ localStorage.setItem('study-version-seen',VERSION); }catch(e){} }
+  $('cl-open').onclick=openCL; $('cl-close').onclick=closeCL;
+  cl.addEventListener('click',e=>{ if(e.target===cl) closeCL(); });
+  document.addEventListener('keydown',e=>{ if(!cl.hidden){ if(e.key==='Escape') closeCL(); e.stopPropagation(); } }, true);
+  const markVersion=()=>{ try{ localStorage.setItem('study-version-seen',VERSION); }catch(e){} };
+  $('g-skip').addEventListener('click',markVersion); $('g-next').addEventListener('click',()=>{ if(g.hidden) markVersion(); });
+
+  let seen=false, verSeen=VERSION;
+  try{ seen=!!localStorage.getItem('study-guide-seen'); verSeen=localStorage.getItem('study-version-seen'); }catch(e){ seen=true; }
   if(!seen) setTimeout(open,700);
+  else if(verSeen!==VERSION) setTimeout(openCL,700);
 })();
 
 /* ---------- study app ---------- */
