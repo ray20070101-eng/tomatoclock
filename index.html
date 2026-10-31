@@ -184,6 +184,21 @@ textarea::placeholder,.drawer input::placeholder{color:var(--faint)}
 .toast{font-size:13px;color:var(--dim)}
 footer .shell{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-block:22px}
 
+/* ---------- end-of-session card + sound toggle ---------- */
+.sfx-btn{background:none;border:1px solid var(--line-2);color:var(--dim);font-family:var(--label);font-size:11px;letter-spacing:.16em;padding:3px 8px;border-radius:999px;cursor:pointer}
+.sfx-btn i{font-style:normal;color:var(--fg)}
+.sfx-btn[aria-pressed="false"] i{color:var(--faint)}
+.done{position:fixed;z-index:58;left:50%;top:50%;width:min(440px,calc(100vw - 32px));transform:translate(-50%,-50%);background:var(--panel);border:1px solid var(--line-2);box-shadow:0 30px 90px rgb(0 0 0/.6),0 0 0 100vmax rgb(4 5 7/.35);padding:28px 28px 22px;display:flex;flex-direction:column;gap:12px;opacity:0}
+.done.show{animation:doneIn .7s cubic-bezier(.2,.8,.2,1) forwards}
+@keyframes doneIn{0%{opacity:0;transform:translate(-50%,-44%) scale(.96)}100%{opacity:1;transform:translate(-50%,-50%)}}
+.done-title{margin:0;font-family:var(--serif);font-size:clamp(44px,8vw,64px);line-height:.95;letter-spacing:-.02em}
+.done-title em{color:var(--dim)}
+.done-sub{margin:0;color:var(--dim);font-size:14px}
+.done-quote{margin:4px 0 6px;padding:12px 0 0 0;border-top:1px solid var(--line);font-family:var(--zh-serif);font-size:18px;line-height:1.6;letter-spacing:.06em;color:var(--fg)}
+.done-quote::before{content:"“";font-family:var(--serif);font-size:34px;line-height:0;vertical-align:-12px;margin-right:6px;color:var(--faint)}
+.done .btn{align-self:flex-end;min-width:88px;justify-content:center}
+@media (prefers-reduced-motion:reduce){.done.show{animation:none;opacity:1}}
+
 /* ---------- help popovers + tour ---------- */
 .eyebrow-row{display:flex;align-items:center;gap:10px}
 .help-btn{display:inline-grid;place-items:center;width:20px;height:20px;padding:0;border-radius:50%;border:1px solid var(--line-2);background:transparent;color:var(--dim);font:500 11px var(--label);letter-spacing:0;cursor:pointer;vertical-align:2px;margin-left:8px;transition:color .2s,border-color .2s}
@@ -305,7 +320,7 @@ body.rain .week{background:rgb(16 18 22/.55);-webkit-backdrop-filter:blur(10px);
 @media (prefers-reduced-motion:reduce){.draw,.pop,.ring-loop,.steam,.spin-slow,.fade-in,.g-enter .g-text>*,.g-enter .g-art svg,.coach{animation:none;opacity:1;stroke-dashoffset:0}}
 
 /* ---------- shape switcher ---------- */
-.shape-switch{position:absolute;z-index:3;right:max(16px,env(safe-area-inset-right,0px));bottom:76px;display:flex;align-items:center;gap:12px}
+.shape-switch{position:absolute;z-index:3;right:max(16px,env(safe-area-inset-right,0px));top:22px;display:flex;align-items:center;gap:12px}
 .shape-name{font-family:var(--label);font-size:11px;letter-spacing:.2em;color:var(--dim);text-transform:uppercase;white-space:nowrap}
 .shape-name b{color:var(--fg);font-weight:500}
 .shape-btn{width:44px;height:44px;border-radius:50%;border:1px solid var(--line-2);background:rgb(14 14 16/.6);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);padding:0;cursor:pointer;transition:border-color .3s,transform .5s cubic-bezier(.2,.7,.2,1)}
@@ -438,6 +453,7 @@ body.rain nav{background:rgb(8 10 13/.55)}
         <label>S <input id="s-short" type="number" min="1" max="60" value="5"></label>
         <label>L <input id="s-long" type="number" min="1" max="60" value="15"></label>
         <span>MIN</span>
+        <button class="sfx-btn" id="sfx-btn" aria-pressed="true" aria-label="提示音">SFX <i id="sfx-state">ON</i></button>
         <button class="help-btn" data-help="settings" aria-label="操作說明">?</button>
       </div>
     </div>
@@ -574,6 +590,13 @@ body.rain nav{background:rgb(8 10 13/.55)}
       <div class="row"><button class="btn small ghost" id="g-prev">BACK</button><button class="btn small" id="g-tour" hidden>介面導覽</button><button class="btn solid" id="g-next"><span id="g-next-label">NEXT</span><span class="arr">↗</span></button></div>
     </div>
   </div>
+</div>
+<div class="done" id="done" hidden role="status" aria-live="polite">
+  <span class="lbl" id="done-lbl"></span>
+  <p class="done-title" id="done-title"></p>
+  <p class="done-sub" id="done-sub"></p>
+  <blockquote class="done-quote" id="done-quote"></blockquote>
+  <button class="btn small" id="done-ok">好</button>
 </div>
 <div class="help-pop" id="help-pop" hidden role="dialog" aria-labelledby="help-title"></div>
 <div class="tour-catch" id="tour-catch" hidden></div>
@@ -1031,7 +1054,8 @@ void main(){
       ['寫下任務','「這輪要念什麼？」填好，完成後會記進今日紀錄。'],
       ['錶盤','亮的刻度是剩下的時間，小鋼珠是現在的位置。'],
       ['換形狀','錶盤右下角的小圓鈕，五種雕塑輪流切換。'],
-      ['不怕重新整理','計時中關掉或重新整理頁面，回來會接著倒數。']],
+      ['不怕重新整理','計時中關掉或重新整理頁面，回來會接著倒數。'],
+      ['提示音','開始、最後 3 秒、結束都有聲音，下方 SFX 可以關掉。']],
       keys:[['Space','開始／暫停'],['R','重設'],['N','跳過']]},
     settings:{t:'Modes 模式與時間',items:[
       ['模式','FOCUS／SHORT BREAK／LONG BREAK 可以手動切換。'],
@@ -1258,24 +1282,71 @@ void main(){
   function persistTimer(){ state.timer={mode, running, endAt, left:Math.max(0,left), total}; save(); }
   function start(){
     running=true; endAt=Date.now()+left*1000; clearInterval(tick); keepAwake(true);
-    tick=setInterval(()=>{ left=(endAt-Date.now())/1000; if(left<=0){left=0;finish();} draw(); },250);
+    let lastSec=Math.ceil(left);
+    tick=setInterval(()=>{ left=(endAt-Date.now())/1000; const sec=Math.ceil(left); if(sec!==lastSec){ lastSec=sec; if(sec>0 && sec<=3) sfx('tick'); } if(left<=0){left=0;finish();} draw(); },250);
     persistTimer(); draw();
   }
   function pause(){ running=false; clearInterval(tick); keepAwake(false); persistTimer(); draw(); }
-  let actx;
-  function chime(){
+  let actx=null;
+  function audio(){
     try{
       actx ||= new (window.AudioContext||window.webkitAudioContext)();
-      [0,.4].forEach((t,i)=>{
-        const o=actx.createOscillator(), g=actx.createGain(); o.type='sine'; o.frequency.value=i?1046:784;
-        g.gain.setValueAtTime(.0001,actx.currentTime+t); g.gain.exponentialRampToValueAtTime(.22,actx.currentTime+t+.02);
-        g.gain.exponentialRampToValueAtTime(.0001,actx.currentTime+t+1.1);
-        o.connect(g).connect(actx.destination); o.start(actx.currentTime+t); o.stop(actx.currentTime+t+1.2);
-      });
-    }catch(e){}
+      if(actx.state==='suspended') actx.resume();
+      return actx;
+    }catch(e){ return null; }
   }
+  // unlock audio on the first touch / key (needed on iPhone / iPad)
+  const unlock=()=>{ const c=audio(); if(c){ const b=c.createBuffer(1,1,22050), src=c.createBufferSource(); src.buffer=b; src.connect(c.destination); src.start(0); } removeEventListener('pointerdown',unlock,true); removeEventListener('keydown',unlock,true); };
+  addEventListener('pointerdown',unlock,true); addEventListener('keydown',unlock,true);
+  function bell(c,t,f,vol,dur){
+    // struck-metal bell: a few inharmonic partials with fast attack, long decay
+    [[1,1],[2.01,.42],[2.76,.28],[5.4,.12]].forEach(([r,a])=>{
+      const o=c.createOscillator(), g=c.createGain(); o.type='sine'; o.frequency.value=f*r;
+      g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(vol*a,t+.006);
+      g.gain.exponentialRampToValueAtTime(.0001,t+dur*(r>2?.45:1));
+      o.connect(g).connect(c.destination); o.start(t); o.stop(t+dur+.05);
+    });
+  }
+  function sfx(kind){
+    if(state.settings.sfx===false) return;
+    const c=audio(); if(!c) return; const t=c.currentTime+.02;
+    if(kind==='start'){ bell(c,t,659,.16,.9); bell(c,t+.12,988,.14,1.3); }
+    else if(kind==='pause'){ bell(c,t,784,.08,.5); }
+    else if(kind==='tick'){ const o=c.createOscillator(), g=c.createGain(); o.type='triangle'; o.frequency.value=1800; g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(.08,t+.003); g.gain.exponentialRampToValueAtTime(.0001,t+.06); o.connect(g).connect(c.destination); o.start(t); o.stop(t+.08); }
+    else if(kind==='focusEnd'){ [0,1.9].forEach(o=>{ bell(c,t+o,1047,.26,2.6); bell(c,t+o+.32,784,.22,2.6); bell(c,t+o+.64,1319,.24,3.2); }); }
+    else if(kind==='breakEnd'){ bell(c,t,523,.2,1.6); bell(c,t+.22,784,.2,1.6); bell(c,t+.44,1047,.24,2.4); }
+  }
+  const QUOTES=[
+    '今天的你，比昨天多走了一步。','慢慢來，比較快。','你不用一次做完，只要不停下來。','專注的 25 分鐘，勝過分心的兩小時。',
+    '累了就休息，不是放棄。','每一個番茄，都是給未來自己的禮物。','先完成，再完美。','你已經比剛坐下時厲害一點了。',
+    '別跟別人比，跟昨天的自己比。','今天念的每一頁，考試那天都會回來幫你。','能坐下來開始，就贏了一半。','喝口水，你做得很好。',
+    '不會的地方，就是下一輪的目標。','小步前進也是前進。','把手機放遠一點，夢想就近一點。','休息是為了走更遠的路。',
+    '現在的辛苦，是之後的底氣。','不用很厲害才開始，要開始才會很厲害。','一次一件事，一件一件來。','你正在變成你想成為的人。'
+  ];
+  let lastQuote=-1;
+  function quote(){ let i=Math.floor(Math.random()*QUOTES.length); if(i===lastQuote) i=(i+1)%QUOTES.length; lastQuote=i; return QUOTES[i]; }
+  let doneT=null, titleT=null;
+  function showDone(kind){
+    const el=$('done');
+    $('done-lbl').textContent = kind==='focusEnd' ? 'POMODORO '+pad(day().length)+' COMPLETE' : 'BREAK OVER';
+    $('done-title').innerHTML = kind==='focusEnd' ? 'Time’s <em>up.</em>' : 'Back to <em>work.</em>';
+    $('done-sub').textContent = kind==='focusEnd'
+      ? (state.cycle===0 ? '完成 4 個番茄了，大休息已經開始。' : '休息 '+state.settings.short+' 分鐘，休息已經自動開始。')
+      : '準備好了就按開始，進入下一個番茄。';
+    $('done-quote').textContent = quote();
+    el.hidden=false; el.classList.remove('show'); void el.offsetWidth; el.classList.add('show');
+    clearTimeout(doneT); doneT=setTimeout(hideDone, 14000);
+    try{ navigator.vibrate && navigator.vibrate([220,120,220]); }catch(e){}
+    if(document.visibilityState!=='visible'){
+      let on=false; clearInterval(titleT);
+      titleT=setInterval(()=>{ on=!on; document.title = on ? (kind==='focusEnd'?'⏰ 時間到！':'⏰ 休息結束') : 'Study. 念書模式'; },1000);
+    }
+  }
+  function hideDone(){ const el=$('done'); el.classList.remove('show'); setTimeout(()=>{ el.hidden=true; },400); clearTimeout(doneT); }
+  document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible' && titleT){ clearInterval(titleT); titleT=null; draw(); } });
   function finish(quiet){
-    clearInterval(tick); running=false; if(!quiet) chime();
+    clearInterval(tick); running=false;
+    if(!quiet){ const k=mode==='focus'?'focusEnd':'breakEnd'; sfx(k); setTimeout(()=>showDone(k),0); }
     if (mode==='focus'){
       const d=quiet && state.timer && state.timer.endAt ? new Date(state.timer.endAt) : new Date();
       day().push({t:pad(d.getHours())+':'+pad(d.getMinutes()), sub:$('subject').value.trim()||'未命名', min:Math.round(total/60)});
@@ -1340,7 +1411,8 @@ void main(){
   function renderExport(){ $('export-text').value = state.cards.map(c=>c.a?c.q+' ｜ '+c.a.replace(/\n/g,' '):c.q).join('\n'); }
 
   /* events */
-  $('start').onclick=()=>running?pause():start();
+  function toggle(){ audio(); if(running){ sfx('pause'); pause(); } else { sfx('start'); start(); hideDone(); } }
+  $('start').onclick=toggle;
   $('reset').onclick=()=>setMode(mode,false);
   $('skip').onclick=()=>setMode(mode==='focus'?'short':'focus',false);
   ['focus','short','long'].forEach(k=>{
@@ -1361,6 +1433,11 @@ void main(){
     inp.oninput=()=>apply(false);
     inp.onchange=()=>apply(true);
   });
+  const sfxBtn=$('sfx-btn');
+  const showSfx=()=>{ const on=state.settings.sfx!==false; sfxBtn.setAttribute('aria-pressed',on); $('sfx-state').textContent=on?'ON':'OFF'; };
+  sfxBtn.onclick=()=>{ state.settings.sfx = state.settings.sfx===false; save(); showSfx(); if(state.settings.sfx){ audio(); sfx('start'); } toast(state.settings.sfx?'提示音已開啟':'提示音已關閉'); };
+  showSfx();
+  $('done-ok').onclick=hideDone;
   $('subject').value=state.subject||'';
   $('subject').oninput=e=>{ state.subject=e.target.value; save(); };
   $('flip').onclick=()=>{ const a=$('card-a'); a.hidden=!a.hidden; $('flip').textContent=a.hidden?'看答案':'蓋起來'; };
@@ -1383,7 +1460,7 @@ void main(){
   };
   document.addEventListener('keydown',e=>{
     if(e.target.matches('input,textarea,select') || e.ctrlKey || e.metaKey || e.altKey) return;
-    if(e.code==='Space'){ e.preventDefault(); running?pause():start(); }
+    if(e.code==='Space'){ e.preventDefault(); toggle(); }
     else if(e.key==='r'||e.key==='R'){ setMode(mode,false); toast('已重設這一輪'); }
     else if(e.key==='n'||e.key==='N'){ $('skip').click(); }
   });
