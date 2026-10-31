@@ -184,6 +184,41 @@ textarea::placeholder,.drawer input::placeholder{color:var(--faint)}
 .toast{font-size:13px;color:var(--dim)}
 footer .shell{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-block:22px}
 
+/* ---------- help popovers + tour ---------- */
+.eyebrow-row{display:flex;align-items:center;gap:10px}
+.help-btn{display:inline-grid;place-items:center;width:20px;height:20px;padding:0;border-radius:50%;border:1px solid var(--line-2);background:transparent;color:var(--dim);font:500 11px var(--label);letter-spacing:0;cursor:pointer;vertical-align:2px;margin-left:8px;transition:color .2s,border-color .2s}
+.eyebrow-row .help-btn,.settings .help-btn{margin-left:0}
+.help-btn:hover,.help-btn[aria-expanded="true"]{color:var(--fg);border-color:var(--fg)}
+.help-pop{position:fixed;z-index:65;width:min(360px,calc(100vw - 32px));background:var(--panel);border:1px solid var(--line-2);box-shadow:0 20px 60px rgb(0 0 0/.55);padding:18px 18px 14px;display:flex;flex-direction:column;gap:12px;animation:gUp .35s cubic-bezier(.2,.7,.2,1) both}
+.help-pop h3{margin:0;font-family:var(--label);font-weight:500;font-size:13px;letter-spacing:.2em;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center}
+.help-pop h3 button{background:none;border:0;color:var(--dim);cursor:pointer;font-size:14px;padding:2px 4px}
+.help-pop ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px}
+.help-pop li{display:grid;grid-template-columns:86px minmax(0,1fr);gap:10px;font-size:13px;line-height:1.6;color:var(--dim)}
+.help-pop li b{font-family:var(--zh-serif);font-weight:500;color:var(--fg);letter-spacing:.04em}
+.help-pop .keys{display:flex;flex-wrap:wrap;gap:6px;border-top:1px solid var(--line);padding-top:10px}
+.kbd{font-family:var(--label);font-size:11px;letter-spacing:.1em;color:var(--fg);border:1px solid var(--line-2);border-bottom-width:2px;padding:1px 6px;border-radius:2px}
+.keys span{font-size:12px;color:var(--dim);margin-right:8px}
+.help-pop .tour-link{align-self:flex-start;background:none;border:0;padding:0;color:var(--dim);font-family:var(--label);font-size:11px;letter-spacing:.18em;cursor:pointer}
+.help-pop .tour-link:hover{color:var(--fg)}
+@media (max-width:560px){.help-pop{left:16px!important;right:16px;bottom:max(16px,env(safe-area-inset-bottom,0px));top:auto!important;width:auto}}
+.tour-spot{position:fixed;z-index:66;border-radius:4px;box-shadow:0 0 0 200vmax rgb(4 5 7/.74),0 0 0 1px rgb(255 255 255/.5);pointer-events:none;transition:top .45s cubic-bezier(.2,.7,.2,1),left .45s cubic-bezier(.2,.7,.2,1),width .45s cubic-bezier(.2,.7,.2,1),height .45s cubic-bezier(.2,.7,.2,1)}
+.tour-tip{position:fixed;z-index:67;width:min(340px,calc(100vw - 32px));background:var(--panel);border:1px solid var(--line-2);padding:18px;display:flex;flex-direction:column;gap:10px;transition:top .45s cubic-bezier(.2,.7,.2,1),left .45s cubic-bezier(.2,.7,.2,1)}
+.tour-tip h3{margin:0;font-family:var(--zh-serif);font-weight:500;font-size:20px;letter-spacing:.06em}
+.tour-tip p{margin:0;color:var(--dim);font-size:14px;line-height:1.75}
+.tour-tip .row{justify-content:space-between}
+.tour-catch{position:fixed;inset:0;z-index:65}
+/* weekly chart */
+.week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:10px;align-items:end;height:150px;margin-top:20px;padding:14px 16px 10px;border:1px solid var(--line);background:var(--panel)}
+.week .col{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:6px;height:100%;min-width:0}
+.week .val{font-family:var(--label);font-size:11px;letter-spacing:.08em;color:var(--dim);font-variant-numeric:tabular-nums}
+.week .bar{width:min(28px,70%);background:var(--line-2);min-height:2px;transition:height .6s cubic-bezier(.2,.7,.2,1)}
+.week .col.today .bar{background:var(--fg)}
+.week .col.today .val{color:var(--fg)}
+.week .day{font-family:var(--label);font-size:11px;letter-spacing:.16em;color:var(--faint)}
+.week .col.today .day{color:var(--fg)}
+body.rain .week{background:rgb(16 18 22/.55);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+@media (prefers-reduced-motion:reduce){.help-pop,.tour-spot,.tour-tip,.week .bar{animation:none;transition:none}}
+
 /* ---------- changelog ---------- */
 .ver-tag{background:none;border:0;padding:0;font-family:var(--serif);font-style:italic;font-size:13px;color:var(--dim);cursor:pointer;letter-spacing:.02em}
 .ver-tag:hover{color:var(--fg)}
@@ -370,7 +405,7 @@ body.rain nav{background:rgb(8 10 13/.55)}
   </div>
   <div class="shell gutter">
     <div class="hero-copy">
-      <span class="lbl" id="eyebrow">SESSION 01 / FOCUS</span>
+      <div class="eyebrow-row"><span class="lbl" id="eyebrow">SESSION 01 / FOCUS</span><button class="help-btn" data-help="timer" aria-label="操作說明">?</button></div>
       <h1 class="headline" id="headline">Stay in<br><em>the zone</em></h1>
       <div class="clock" aria-live="off"><span id="cm">25</span><span class="colon">:</span><em id="cs">00</em></div>
       <div class="sub-line"><svg class="mini" viewBox="0 0 30 30" aria-hidden="true"><circle class="bg" cx="15" cy="15" r="12"/><circle class="fg" id="mini-fg" cx="15" cy="15" r="12" transform="rotate(-90 15 15)"/></svg><span class="zh" id="phase">準備開始</span><span>·</span><span>空白鍵開始／暫停</span></div>
@@ -379,7 +414,7 @@ body.rain nav{background:rgb(8 10 13/.55)}
       <div class="ctas">
         <button class="btn solid" id="start"><span id="start-label">START SESSION</span><span class="arr">↗</span></button>
         <button class="btn ghost" id="reset"><span>RESET</span><span class="dot">↺</span></button>
-        <button class="btn ghost" id="skip"><span>SKIP</span><span class="dot">▶</span></button>
+        <button class="btn ghost" id="skip"><span>SKIP</span><span class="dot">▶︎</span></button>
       </div>
     </div>
   </div>
@@ -403,6 +438,7 @@ body.rain nav{background:rgb(8 10 13/.55)}
         <label>S <input id="s-short" type="number" min="1" max="60" value="5"></label>
         <label>L <input id="s-long" type="number" min="1" max="60" value="15"></label>
         <span>MIN</span>
+        <button class="help-btn" data-help="settings" aria-label="操作說明">?</button>
       </div>
     </div>
   </div>
@@ -410,20 +446,21 @@ body.rain nav{background:rgb(8 10 13/.55)}
 
 <section class="block gutter" id="record">
   <div class="shell">
-    <div class="sec-head"><h2>Today's Record</h2><span class="lbl">5 Pomodoros = 正</span></div>
+    <div class="sec-head"><h2>Today's Record <button class="help-btn" data-help="record" aria-label="操作說明">?</button></h2><span class="lbl">5 Pomodoros = 正</span></div>
     <div class="grid4">
       <div class="tile"><span class="lbl">Tally</span><div class="tally" id="tally"></div></div>
       <div class="tile"><span class="lbl">Pomodoros</span><div class="num" id="st-count">0</div></div>
       <div class="tile"><span class="lbl">Focus Time</span><div class="num"><span id="st-min">0</span><em>min</em></div></div>
       <div class="tile"><span class="lbl">Until Long Break</span><div class="num" id="st-streak">4</div></div>
     </div>
+    <div class="week" id="week" aria-label="過去 7 天的專注分鐘"></div>
     <ul class="log" id="log"></ul>
   </div>
 </section>
 
 <section class="block gutter" id="music">
   <div class="shell">
-    <div class="sec-head"><h2>Music</h2><span class="lbl">Spotify</span></div>
+    <div class="sec-head"><h2>Music <button class="help-btn" data-help="music" aria-label="操作說明">?</button></h2><span class="lbl">Spotify</span></div>
     <div class="banner">
       <canvas class="vinyl" id="vinyl" aria-hidden="true"></canvas>
       <div class="np">
@@ -453,7 +490,7 @@ body.rain nav{background:rgb(8 10 13/.55)}
 
 <section class="block gutter" id="review">
   <div class="shell">
-    <div class="sec-head"><h2>Review</h2><span class="lbl" id="card-count"></span></div>
+    <div class="sec-head"><h2>Review <button class="help-btn" data-help="review" aria-label="操作說明">?</button></h2><span class="lbl" id="card-count"></span></div>
     <div class="review-grid">
       <div class="card" id="card-wrap">
         <span class="lbl" id="review-hint">休息時會自動抽一張卡片考你</span>
@@ -534,10 +571,14 @@ body.rain nav{background:rgb(8 10 13/.55)}
     </div>
     <div class="g-foot">
       <div class="g-dots" id="g-dots"></div>
-      <div class="row"><button class="btn small ghost" id="g-prev">BACK</button><button class="btn solid" id="g-next"><span id="g-next-label">NEXT</span><span class="arr">↗</span></button></div>
+      <div class="row"><button class="btn small ghost" id="g-prev">BACK</button><button class="btn small" id="g-tour" hidden>介面導覽</button><button class="btn solid" id="g-next"><span id="g-next-label">NEXT</span><span class="arr">↗</span></button></div>
     </div>
   </div>
 </div>
+<div class="help-pop" id="help-pop" hidden role="dialog" aria-labelledby="help-title"></div>
+<div class="tour-catch" id="tour-catch" hidden></div>
+<div class="tour-spot" id="tour-spot" hidden></div>
+<div class="tour-tip" id="tour-tip" hidden role="dialog" aria-labelledby="tour-title"><span class="lbl" id="tour-count"></span><h3 id="tour-title"></h3><p id="tour-text"></p><div class="row"><button class="g-skip" id="tour-end">END TOUR</button><button class="btn small" id="tour-next">下一步 →</button></div></div>
 <canvas id="rain" aria-hidden="true"></canvas>
 <div class="rain-dock">
   <div class="rain-panel" id="rain-panel" hidden>
@@ -564,7 +605,7 @@ body.rain nav{background:rgb(8 10 13/.55)}
 /* ---------- liquid chrome sculpture (WebGL raymarch) ---------- */
 const Sculpture = (function(){
   const cv = document.getElementById('chrome');
-  const gl = cv.getContext('webgl',{antialias:false,premultipliedAlpha:false,alpha:true});
+  const gl = cv.getContext('webgl',{antialias:false,premultipliedAlpha:true,alpha:true});
   if(!gl){ cv.remove(); return {setEnergy(){},setShape(){},shape(){return 0;}}; }
   const vs = 'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
   const fs = `precision highp float;
@@ -643,7 +684,7 @@ void main(){
     c*=.55+.45*smoothstep(-1.2,.6,p.y);}
   c*=smoothstep(1.35,.25,length(uv*vec2(.9,1.)));
   if(hit){gl_FragColor=vec4(vec3(pow(c,.9)),1.);}
-  else{gl_FragColor=vec4(vec3(1.),max(0.,bg-.039)*1.4);}}`;
+  else{float a=clamp((bg-.039)*1.4,0.,1.);gl_FragColor=vec4(vec3(a),a);}}`;
   function sh(type,src){const s=gl.createShader(type);gl.shaderSource(s,src);gl.compileShader(s);return s;}
   const pr=gl.createProgram();gl.attachShader(pr,sh(gl.VERTEX_SHADER,vs));gl.attachShader(pr,sh(gl.FRAGMENT_SHADER,fs));gl.linkProgram(pr);
   if(!gl.getProgramParameter(pr,gl.LINK_STATUS)){ cv.remove(); return {setEnergy(){},setShape(){},shape(){return 0;}}; }
@@ -944,12 +985,14 @@ void main(){
     [...dots.children].forEach((d,j)=>d.classList.toggle('on',j===i));
     $('g-prev').style.visibility = i? 'visible':'hidden';
     $('g-next-label').textContent = i===slides.length-1 ? 'START STUDYING' : 'NEXT';
+    $('g-tour').hidden = i!==slides.length-1;
   }
   function open(){ g.hidden=false; show(0); setTimeout(()=>$('g-next').focus(),50); }
   function close(){ g.hidden=true; try{ localStorage.setItem('study-guide-seen','1'); }catch(e){} }
   $('g-next').onclick=()=> i===slides.length-1 ? close() : show(i+1);
   $('g-prev').onclick=()=>show(i-1);
   $('g-skip').onclick=close;
+  $('g-tour').onclick=()=>{ $('g-skip').click(); setTimeout(()=>window.StudyTour&&window.StudyTour(),250); };
   $('guide-open').onclick=open;
   g.addEventListener('click',e=>{ if(e.target===g) close(); });
   document.addEventListener('keydown',e=>{
@@ -973,6 +1016,135 @@ void main(){
   try{ seen=!!localStorage.getItem('study-guide-seen'); verSeen=localStorage.getItem('study-version-seen'); }catch(e){ seen=true; }
   if(!seen) setTimeout(open,700);
   else if(verSeen!==VERSION) setTimeout(openCL,700);
+})();
+
+/* ---------- section help + interface tour ---------- */
+(function(){
+  const $=id=>document.getElementById(id);
+  const live=!!$('now-refresh');
+  const K=(k)=>'<span class="kbd">'+k+'</span>';
+  const HELP={
+    timer:{t:'Timer 計時器',items:[
+      ['開始／暫停','按 START，或直接按空白鍵。'],
+      ['RESET','把這一輪重新從頭開始。'],
+      ['SKIP','跳到下一段：專注 → 休息，休息 → 專注。'],
+      ['寫下任務','「這輪要念什麼？」填好，完成後會記進今日紀錄。'],
+      ['錶盤','亮的刻度是剩下的時間，小鋼珠是現在的位置。'],
+      ['換形狀','錶盤右下角的小圓鈕，五種雕塑輪流切換。'],
+      ['不怕重新整理','計時中關掉或重新整理頁面，回來會接著倒數。']],
+      keys:[['Space','開始／暫停'],['R','重設'],['N','跳過']]},
+    settings:{t:'Modes 模式與時間',items:[
+      ['模式','FOCUS／SHORT BREAK／LONG BREAK 可以手動切換。'],
+      ['F／S／L','專注、短休息、長休息的分鐘數，打完立即生效。'],
+      ['01 — 04','現在是第幾個番茄，第 4 個結束會自動進長休息。'],
+      ['細線','這一輪已經過了多少。']]},
+    record:{t:"Today's Record 今日紀錄",items:[
+      ['自動記錄','每完成一個專注番茄記一筆，休息不算。'],
+      ['正字','每 5 個番茄寫成一個「正」。'],
+      ['本週','長條圖是過去 7 天的專注分鐘，最亮的是今天。'],
+      ['存在哪裡','紀錄存在這個瀏覽器，換手機或電腦不會同步。']]},
+    music:{t:'Music 音樂',items: live ? [
+      ['正在播放','顯示你 Spotify 正在播的歌，最多 30 秒更新一次。'],
+      ['Refresh','剛切歌想馬上看到，按這個。'],
+      ['看歌詞','Lyrics on Spotify 會打開這首歌，用 Spotify 的歌詞功能。'],
+      ['找歌單','右邊選一個風格，會列出 Spotify 歌單，點了在新分頁開啟。'],
+      ['雨聲','想聽白噪音，用右下角的雨天模式。']] : [
+      ['找歌單','右邊選一個風格，會在新分頁打開 Spotify 搜尋結果。'],
+      ['開 App','Spotify 網頁上按「開啟應用程式」就會跳到 App。'],
+      ['雨聲','想聽白噪音，用右下角的雨天模式。']]},
+    review:{t:'Review 複習卡',items:[
+      ['休息抽卡','每次休息會自動抽一張卡，回想剛剛念的重點。'],
+      ['操作','看答案、換一張、刪除這張。'],
+      ['IMPORT','從 CollaNote 複製重點貼上，一行一張卡，例如「指標｜存位址的變數」。'],
+      ['NEW CARD','自己手動新增一張。'],
+      ['EXPORT','把所有卡片整理成文字，貼回 CollaNote 備份。'],
+      ['範例卡','標 EXAMPLE 的是示範，第一次匯入時會自動移除。']]}
+  };
+  const pop=$('help-pop'); let openBtn=null;
+  function closePop(){ pop.hidden=true; if(openBtn){ openBtn.setAttribute('aria-expanded','false'); openBtn=null; } }
+  function openPop(btn){
+    const h=HELP[btn.dataset.help]; if(!h) return;
+    if(openBtn===btn){ closePop(); return; }
+    closePop(); openBtn=btn; btn.setAttribute('aria-expanded','true');
+    pop.innerHTML='<h3><span id="help-title"></span><button aria-label="關閉">✕</button></h3><ul></ul>';
+    pop.querySelector('#help-title').textContent=h.t;
+    const ul=pop.querySelector('ul');
+    h.items.forEach(([a,b])=>{ const li=document.createElement('li'); li.innerHTML='<b></b><span></span>'; li.children[0].textContent=a; li.children[1].textContent=b; ul.appendChild(li); });
+    if(h.keys){ const d=document.createElement('div'); d.className='keys'; d.innerHTML=h.keys.map(([k,t])=>K(k)+'<span>'+t+'</span>').join(''); pop.appendChild(d); }
+    const tl=document.createElement('button'); tl.className='tour-link'; tl.textContent='整頁介面導覽 →'; tl.onclick=()=>{ closePop(); startTour(); }; pop.appendChild(tl);
+    pop.querySelector('h3 button').onclick=closePop;
+    pop.hidden=false;
+    const r=btn.getBoundingClientRect(), w=pop.offsetWidth, hgt=pop.offsetHeight;
+    let left=Math.min(innerWidth-w-16, Math.max(16, r.left-12));
+    let top=r.bottom+10; if(top+hgt>innerHeight-16) top=Math.max(16, r.top-hgt-10);
+    pop.style.left=left+'px'; pop.style.top=top+'px';
+  }
+  document.querySelectorAll('.help-btn').forEach(b=>{ b.setAttribute('aria-expanded','false'); b.onclick=e=>{ e.stopPropagation(); openPop(b); }; });
+  document.addEventListener('click',e=>{ if(!pop.hidden && !pop.contains(e.target)) closePop(); });
+  addEventListener('scroll',()=>{ if(!pop.hidden) closePop(); },{passive:true});
+  addEventListener('resize',closePop);
+
+  /* tour */
+  const STEPS=[
+    {sel:'.hero-copy', t:'計時器', x:'按 START 或空白鍵開始。先在「這輪要念什麼？」寫下任務，完成後會自動記錄。'},
+    {sel:'#dial', t:'錶盤', x:'亮的刻度是剩下的時間，暗掉的是已經過去的，小鋼珠標出現在的位置。'},
+    {sel:'.shape-switch', t:'換形狀', x:'點這顆小圓鈕，雕塑會融化變成下一種，一共五種。'},
+    {sel:'.hero-foot', t:'模式與時間', x:'切換專注／短休／長休，F／S／L 調整分鐘數。左邊 01—04 是第幾個番茄。'},
+    {sel:'#record .grid4', t:'今日紀錄', x:'番茄數、專注分鐘、距離長休息還有幾個，滿 5 個寫一個「正」。'},
+    {sel:'#week', t:'本週長條圖', x:'過去 7 天每天專注了幾分鐘，最亮的那根是今天。'},
+    {sel:'.banner', t:'音樂', x: live ? '左邊是 Spotify 正在播的歌，右邊選風格找念書歌單。' : '選一個風格，在 Spotify 打開念書歌單。'},
+    {sel:'.review-grid', t:'複習卡', x:'休息時自動抽卡考你。右邊可以從 CollaNote 匯入重點，或匯出備份。'},
+    {sel:'.rain-dock', t:'雨天模式', x:'下雨的窗景配上雨聲白噪音，喇叭開關控制要不要播聲音。'},
+    {sel:'.nav-right', t:'說明與更新', x:'GUIDE 重看番茄鐘教學，DEMO 標籤看更新紀錄。每一區標題旁的 ? 是那一區的操作說明。'}
+  ];
+  const spot=$('tour-spot'), tip=$('tour-tip'), catcher=$('tour-catch');
+  let steps=[], si=0, onTour=false, raf=0;
+  const visible=el=>{ if(!el) return false; const r=el.getBoundingClientRect(); return r.width>0 && r.height>0 && getComputedStyle(el).display!=='none'; };
+  function place(){
+    if(!onTour) return;
+    const el=document.querySelector(steps[si].sel); if(!el) return;
+    const r=el.getBoundingClientRect(), pad=8;
+    const top=Math.max(4,r.top-pad), left=Math.max(4,r.left-pad);
+    const w=Math.min(innerWidth-left-4, r.width+pad*2), h=Math.min(innerHeight-top-4, r.height+pad*2);
+    Object.assign(spot.style,{top:top+'px',left:left+'px',width:w+'px',height:h+'px'});
+    const tw=tip.offsetWidth, th=tip.offsetHeight;
+    let ty = top+h+12, tx = Math.min(innerWidth-tw-16, Math.max(16, left));
+    if(ty+th>innerHeight-12){
+      if(left+w+tw+28<innerWidth){ tx=left+w+16; ty=Math.min(innerHeight-th-16, Math.max(16, top+h/2-th/2)); }
+      else { ty = top-th-12; if(ty<12) ty = innerHeight-th-16; }
+    }
+    tip.style.top=ty+'px'; tip.style.left=tx+'px';
+  }
+  function go(n){
+    si=n; const st=steps[si];
+    $('tour-count').textContent=String(si+1).padStart(2,'0')+' / '+String(steps.length).padStart(2,'0');
+    $('tour-title').textContent=st.t; $('tour-text').textContent=st.x;
+    $('tour-next').textContent = si===steps.length-1 ? '完成 ✓' : '下一步 →';
+    const el=document.querySelector(st.sel);
+    const fixed=el && getComputedStyle(el).position==='fixed';
+    if(el && !fixed) el.scrollIntoView({block:'center',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
+    let t0=performance.now(); cancelAnimationFrame(raf);
+    const follow=now=>{ place(); if(now-t0<900) raf=requestAnimationFrame(follow); };
+    raf=requestAnimationFrame(follow);
+  }
+  function startTour(){
+    steps=STEPS.filter(s=>visible(document.querySelector(s.sel)));
+    if(!steps.length) return;
+    onTour=true; spot.hidden=false; tip.hidden=false; catcher.hidden=false; go(0); setTimeout(()=>$('tour-next').focus(),60);
+  }
+  function endTour(){ onTour=false; spot.hidden=true; tip.hidden=true; catcher.hidden=true; cancelAnimationFrame(raf); }
+  $('tour-next').onclick=()=> si===steps.length-1 ? endTour() : go(si+1);
+  $('tour-end').onclick=endTour; catcher.onclick=endTour;
+  addEventListener('resize',place); addEventListener('scroll',place,{passive:true});
+  document.addEventListener('keydown',e=>{
+    if(!pop.hidden && e.key==='Escape'){ closePop(); e.stopPropagation(); return; }
+    if(!onTour) return;
+    if(e.key==='Escape') endTour();
+    if(e.key==='ArrowRight'||e.key==='Enter'){ e.preventDefault(); $('tour-next').click(); }
+    if(e.key==='ArrowLeft' && si) go(si-1);
+    e.stopPropagation();
+  }, true);
+  window.StudyTour=startTour;
 })();
 
 /* ---------- study app ---------- */
@@ -1073,14 +1245,23 @@ void main(){
     ['focus','short','long'].forEach(k => $('m-'+k).setAttribute('aria-pressed', k===m));
     setHead();
     if (m!=='focus') showCard(true);
-    draw(); if (go) start();
+    if (!go) keepAwake(false);
+    persistTimer(); draw(); if (go) start();
   }
+  let wakeLock=null;
+  function keepAwake(on){
+    try{
+      if(on && !wakeLock && navigator.wakeLock) navigator.wakeLock.request('screen').then(l=>{ wakeLock=l; l.addEventListener('release',()=>{ wakeLock=null; }); }).catch(()=>{});
+      if(!on && wakeLock){ wakeLock.release().catch(()=>{}); wakeLock=null; }
+    }catch(e){}
+  }
+  function persistTimer(){ state.timer={mode, running, endAt, left:Math.max(0,left), total}; save(); }
   function start(){
-    running=true; endAt=Date.now()+left*1000; clearInterval(tick);
+    running=true; endAt=Date.now()+left*1000; clearInterval(tick); keepAwake(true);
     tick=setInterval(()=>{ left=(endAt-Date.now())/1000; if(left<=0){left=0;finish();} draw(); },250);
-    draw();
+    persistTimer(); draw();
   }
-  function pause(){ running=false; clearInterval(tick); draw(); }
+  function pause(){ running=false; clearInterval(tick); keepAwake(false); persistTimer(); draw(); }
   let actx;
   function chime(){
     try{
@@ -1093,13 +1274,13 @@ void main(){
       });
     }catch(e){}
   }
-  function finish(){
-    clearInterval(tick); running=false; chime();
+  function finish(quiet){
+    clearInterval(tick); running=false; if(!quiet) chime();
     if (mode==='focus'){
-      const d=new Date();
-      day().push({t:pad(d.getHours())+':'+pad(d.getMinutes()), sub:$('subject').value.trim()||'未命名', min:state.settings.focus});
+      const d=quiet && state.timer && state.timer.endAt ? new Date(state.timer.endAt) : new Date();
+      day().push({t:pad(d.getHours())+':'+pad(d.getMinutes()), sub:$('subject').value.trim()||'未命名', min:Math.round(total/60)});
       state.cycle=(state.cycle+1)%4; save(); renderLog();
-      setMode(state.cycle===0?'long':'short', true);
+      setMode(state.cycle===0?'long':'short', !quiet);
     } else setMode('focus', false);
   }
   function renderLog(){
@@ -1107,6 +1288,17 @@ void main(){
     let html='正'.repeat(Math.floor(n/5)); if(n%5) html+='<span class="part">'+parts[n%5-1]+'</span>';
     $('tally').innerHTML = html || '<span class="none">還沒有番茄</span>';
     $('st-count').textContent=pad(n); $('st-min').textContent=mins; $('st-streak').textContent=pad(4-state.cycle);
+    const wk=$('week'); if(wk){
+      const days=[], now=new Date();
+      for(let k=6;k>=0;k--){ const d=new Date(now.getFullYear(),now.getMonth(),now.getDate()-k);
+        const key=d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); const arr=state.days[key]||[];
+        days.push({lab:k===0?'TODAY':d.toLocaleDateString('en-US',{weekday:'short'}).toUpperCase(), m:arr.reduce((a,b)=>a+b.min,0), today:k===0}); }
+      const max=Math.max(state.settings.focus, ...days.map(x=>x.m));
+      wk.innerHTML=''; days.forEach(x=>{ const c=document.createElement('div'); c.className='col'+(x.today?' today':'');
+        c.innerHTML='<span class="val"></span><span class="bar"></span><span class="day"></span>';
+        c.children[0].textContent=x.m? x.m : ''; c.children[1].style.height=(x.m? Math.max(4, x.m/max*90) : 2)+'px'; c.children[2].textContent=x.lab;
+        c.title=x.m+' 分鐘'; wk.appendChild(c); });
+    }
     const ul=$('log'); ul.innerHTML='';
     if(!n){ ul.innerHTML='<li style="display:block"><p class="empty">完成的每一輪都會記在這裡。</p></li>'; return; }
     list.slice().reverse().forEach(r=>{
@@ -1189,8 +1381,13 @@ void main(){
     const fallback=()=>{ ta.select(); $('copy-toast').textContent='已選取，按 ⌘C／Ctrl+C 複製'; };
     try{ navigator.clipboard.writeText(ta.value).then(done,fallback); }catch(e){ fallback(); }
   };
-  document.addEventListener('keydown',e=>{ if(e.target.matches('input,textarea')) return; if(e.code==='Space'){ e.preventDefault(); running?pause():start(); } });
-  document.addEventListener('visibilitychange',()=>{ if(running){ left=(endAt-Date.now())/1000; if(left<=0){left=0;finish();} draw(); } });
+  document.addEventListener('keydown',e=>{
+    if(e.target.matches('input,textarea,select') || e.ctrlKey || e.metaKey || e.altKey) return;
+    if(e.code==='Space'){ e.preventDefault(); running?pause():start(); }
+    else if(e.key==='r'||e.key==='R'){ setMode(mode,false); toast('已重設這一輪'); }
+    else if(e.key==='n'||e.key==='N'){ $('skip').click(); }
+  });
+  document.addEventListener('visibilitychange',()=>{ if(running){ left=(endAt-Date.now())/1000; if(left<=0){left=0;finish();} else if(document.visibilityState==='visible') keepAwake(true); draw(); } });
 
   const d=new Date();
   $('today').textContent = d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}).toUpperCase();
@@ -1206,6 +1403,16 @@ void main(){
     spun+=72; $('shape-btn').style.transform='rotate('+spun+'deg)';
     try{ localStorage.setItem('study-shape',i); }catch(e){}
   };
+  (function restore(){
+    const tm=state.timer; if(!tm || !tm.mode || !state.settings[tm.mode]) return;
+    mode=tm.mode; total=tm.total||state.settings[mode]*60;
+    ['focus','short','long'].forEach(k=>$('m-'+k).setAttribute('aria-pressed',k===mode));
+    if(tm.running){
+      endAt=tm.endAt; left=(endAt-Date.now())/1000;
+      if(left>0){ start(); setTimeout(()=>toast('已接著上次的計時'),50); }
+      else { left=0; setHead(); finish(true); setTimeout(()=>toast(mode==='focus'?'上一輪在你離開時結束了':'上次的番茄已記錄，準備休息'),50); }
+    } else left=Math.min(total, tm.left!=null ? tm.left : total);
+  })();
   setHead(); renderLog(); showCard(true); draw();
 
   document.querySelectorAll('.chips .chip').forEach(c=>c.addEventListener('click',()=>{
